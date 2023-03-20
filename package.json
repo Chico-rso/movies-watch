@@ -1,0 +1,31 @@
+{
+  "name": "moviestream",
+  "version": "1.0.0",
+  "description": "P2P video service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node src/index.ts"
+  },
+  "keywords": [
+    "video",
+    "stream",
+    "fun"
+  ],
+  "author": "Amiran Bestaev",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.21",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "webtorrent": "^2.0.15"
+  }
+}
