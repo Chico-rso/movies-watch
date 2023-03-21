@@ -10,9 +10,17 @@
 <body>
 <div id="app">
     <video src="" controls autoplay></video>
-    <h3>
-        {{ message }}
-    </h3>
+    <ul>
+        <li
+            v-for="file in files"
+            :key="file.magnet"
+        >
+            {{ file.filename }}
+            <button
+                @click="play"
+            >Play</button>
+        </li>
+    </ul>
 </div>
 </body>
 <script>
@@ -21,9 +29,26 @@
 		data()
 		{
 			return {
+				files: [
+					{
+						magnet: '950967732fd44cc2c9b78a661154d8b3f3d8a8fb',
+						filename: 'E:TorrentsWerewolf.by.Night.2022.WEB-DLRip_от New-Team_by_JNS82.avi',
+                    },
+                    {
+						magnet: '',
+						filename: '',
+                    },
+                ],
 				message: "Hello Vue!",
 			};
 		},
+        method:
+        {
+			async play()
+            {
+
+            }
+        }
 	}).mount("#app");
 </script>
 </html>
