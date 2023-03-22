@@ -7,6 +7,7 @@ import { parse } from "qs";
 
 const router = Router();
 
+const TORRENT_URL = "https://rutor.info";
 const BASE_SEARCH_URL = "https://rutor.info/search/0/0/100/0";
 const MAGNET_KEY = "magnet:?xt";
 const SPLIT_MAGNET_STRING = "urn:btih:"
@@ -17,21 +18,24 @@ router.get('/search', async ({ query: { searchTerm } }, res) => {
         const searchResult = await axios.get(`${BASE_SEARCH_URL}/${searchTerm}`)
         const $ = cheerio.load(searchResult.data);
 
-        const data = $("#index tr")
-        const results = Array.from(data).map((item) =>
+        const data = $("#index tr").toArray();
+        const results = data
+        .map((item) =>
         {
             const [_, magnetTeg, title] = $(item).find("a").toArray();
 
             const magnetLink = $(magnetTeg).attr("href");
             const parsedMagnetLink = parse(magnetLink);
 
-            const magnet = String(parsedMagnetLink[MAGNET_KEY]).slice(SPLIT_MAGNET_STRING.length + 1);
+            const magnet = String(parsedMagnetLink[MAGNET_KEY]).replace(SPLIT_MAGNET_STRING,"");
 
+            const torrentUrl = `${TORRENT_URL}${$(title).attr("href")}`;
             return ({
                 magnet,
-                title: $(title).text()
+                title: $(title).text(),
+                torrentUrl
             });
-        });
+        }).filter((item) => item.title);
 
 
         res.status(200).send(results);
