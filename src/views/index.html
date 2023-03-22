@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Video player</title>
 </head>
 <body>
 <div id="app">
-    <video src="" controls autoplay></video>
+    <video :src="videoUrl" controls></video>
     <ul>
         <li
-            v-for="file in files"
-            :key="file.magnet"
+                v-for="file in files"
+                :key="file.magnet"
         >
             {{ file.filename }}
-            <button
-                @click="play"
-            >Play</button>
+            <button @click="play(file)">Play</button>
         </li>
     </ul>
 </div>
@@ -29,26 +29,33 @@
 		data()
 		{
 			return {
+				activeVideo: {},
 				files: [
 					{
-						magnet: '950967732fd44cc2c9b78a661154d8b3f3d8a8fb',
-						filename: 'E:TorrentsWerewolf.by.Night.2022.WEB-DLRip_от New-Team_by_JNS82.avi',
-                    },
-                    {
-						magnet: '',
-						filename: '',
-                    },
-                ],
-				message: "Hello Vue!",
+						magnet: "d84f3d111152aec0b37f3dc8f769061b9d90c120",
+						filename: "Catch.Me.If.You.Can.2002.WEB-DL.1080p.Open.Matte.mkv",
+					},
+				],
 			};
 		},
-        method:
+		computed:
         {
-			async play()
+            videoUrl({activeVideo})
             {
+				console.log('11',activeVideo.magnet);
 
-            }
-        }
+				return activeVideo.filename ? `/stream/${activeVideo.magnet}/${activeVideo.filename}`: "";
+            },
+        },
+		methods:
+        {
+            async play(file)
+            {
+                console.log('22',file);
+                const response = await axios.get(`/stream/add/${file.magnet}`);
+                this.activeVideo = file;
+            },
+        },
 	}).mount("#app");
 </script>
 </html>
