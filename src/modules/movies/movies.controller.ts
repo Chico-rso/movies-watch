@@ -2,11 +2,15 @@ import { Router } from "express";
 import axios from "axios";
 import {SerachRequest} from "./movies.interfaces";
 import * as cheerio from "cheerio";
+import { parse } from "qs";
 
 
 const router = Router();
 
 const BASE_SEARCH_URL = "https://rutor.info/search/0/0/100/0";
+const MAGNET_KEY = "magnet:?xt";
+const SPLIT_MAGNET_STRING = "urn:btih:"
+
 router.get('/search', async ({ query: { searchTerm } }, res) => {
     try
     {
@@ -19,9 +23,12 @@ router.get('/search', async ({ query: { searchTerm } }, res) => {
             const [_, magnetTeg, title] = $(item).find("a").toArray();
 
             const magnetLink = $(magnetTeg).attr("href");
+            const parsedMagnetLink = parse(magnetLink);
+
+            const magnet = String(parsedMagnetLink[MAGNET_KEY]).slice(SPLIT_MAGNET_STRING.length + 1);
 
             return ({
-                magnet: magnetLink,
+                magnet,
                 title: $(title).text()
             });
         });
