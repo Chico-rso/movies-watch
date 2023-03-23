@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -12,50 +12,65 @@
 <body>
 <div id="app">
     <video :src="videoUrl" controls></video>
+    <hr />
+    <label>
+        <input
+            type="search"
+            v-model="searchTerm"
+            placeholder="Search for a movie..."
+        />
+        <button
+            @click="findMovie"
+            style="cursor: pointer;"
+        >Search</button>
+    </label>
     <ul>
         <li
                 v-for="file in files"
                 :key="file.magnet"
         >
-            {{ file.filename }}
-            <button @click="play(file)">Play</button>
+            {{ file.title }}
+            <button
+                style="cursor: pointer;"
+                @click="play(file)"
+            >Play</button>
         </li>
     </ul>
 </div>
 </body>
 <script>
-	const {createApp} = Vue;
-	createApp({
-		data()
-		{
-			return {
-				activeVideo: {},
-				files: [
-					{
-						magnet: "d84f3d111152aec0b37f3dc8f769061b9d90c120",
-						filename: "Catch.Me.If.You.Can.2002.WEB-DL.1080p.Open.Matte.mkv",
-					},
-				],
-			};
-		},
-		computed:
+const {createApp} = Vue;
+createApp({
+    data()
+    {
+        return {
+			searchTerm: '',
+            activeVideo: {},
+            files: [],
+        };
+    },
+    computed:
+    {
+        videoUrl({activeVideo})
         {
-            videoUrl({activeVideo})
-            {
-				console.log('11',activeVideo.magnet);
-
-				return activeVideo.filename ? `/stream/${activeVideo.magnet}/${activeVideo.filename}`: "";
-            },
+            return activeVideo.filename ? `/stream/${activeVideo.magnet}/${activeVideo.filename}`: "";
         },
-		methods:
+    },
+    methods:
+    {
+        async play(file)
         {
-            async play(file)
-            {
-                console.log('22',file);
-                const response = await axios.get(`/stream/add/${file.magnet}`);
-                this.activeVideo = file;
-            },
+            console.log('22',file);
+            const response = await axios.get(`/stream/add/${file.magnet}`);
+            this.activeVideo = file;
         },
-	}).mount("#app");
+        async findMovie()
+        {
+			const response = await axios.get(`/movies/search?searchTerm=${this.searchTerm}`);
+            console.log('33',response.data);
+            this.files = response.data;
+        },
+    },
+}).mount("#app");
 </script>
 </html>
