@@ -3,6 +3,6 @@ import { Router } from "express";
 const router = Router();
 
 router.get('/', (_, res) =>{
-    res.sendfile('src/views/index.html', {root: '.'});
+	res.sendfile('src/views/index.html', {root: '.'});
 })
 export default router;

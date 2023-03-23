@@ -107,17 +107,17 @@ import {Router, Request, Response, NextFunction} from 'express';
 import WebTorrent, {Torrent, TorrentFile} from 'webtorrent';
 
 interface StreamRequest extends Request {
-    params: {
-        magnet: string;
-        fileName: string;
-    };
-    headers: {
-        range: string;
-    };
+	params: {
+		magnet: string;
+		fileName: string;
+	};
+	headers: {
+		range: string;
+	};
 }
 
 interface ErrorWithStatus extends Error {
-    status: number;
+	status: number;
 }
 
 const client = new WebTorrent();
@@ -125,79 +125,79 @@ const client = new WebTorrent();
 const router = Router();
 
 router.get('/add/:magnet', (req: Request, res: Response, next: NextFunction) => {
-    const magnet = req.params.magnet;
+	const magnet = req.params.magnet;
 
-    client.add(magnet, (torrent) => {
-        const files = torrent.files.map((file) => ({
-            name: file.name,
-            length: file.length,
-        }));
+	client.add(magnet, (torrent) => {
+		const files = torrent.files.map((file) => ({
+			name: file.name,
+			length: file.length,
+		}));
 
-        res.status(200).send(files);
-    }).on('error', (err: Error) => next(err));
+		res.status(200).send(files);
+	}).on('error', (err: Error) => next(err));
 });
 
 router.get('/stats', (_: Request, res: Response) => {
-    const {progress, downloadSpeed, ratio} = client;
+	const {progress, downloadSpeed, ratio} = client;
 
-    const state = {
-        progress: Math.round(progress * 100 * 100) / 100,
-        downloadSpeed,
-        ratio,
-    };
+	const state = {
+		progress: Math.round(progress * 100 * 100) / 100,
+		downloadSpeed,
+		ratio,
+	};
 
-    res.status(200).send(state);
+	res.status(200).send(state);
 });
 
 router.get('/:magnet/:fileName', (req: StreamRequest, res: Response, next: NextFunction) => {
-    const {magnet, fileName} = req.params;
-    const range = req.headers.range;
+	const {magnet, fileName} = req.params;
+	const range = req.headers.range;
 
-    if (!range) {
-        const err = new Error('Range is not defined, please make request from HTML5 Player') as ErrorWithStatus;
-        err.status = 416;
-        return next(err);
-    }
+	if (!range) {
+		const err = new Error('Range is not defined, please make request from HTML5 Player') as ErrorWithStatus;
+		err.status = 416;
+		return next(err);
+	}
 
-    const torrentFile = client.get(magnet) as Torrent;
+	const torrentFile = client.get(magnet) as Torrent;
 
-    const file = torrentFile.files.find((file) => file.name === fileName);
+	const file = torrentFile.files.find((file) => file.name === fileName);
 
-    if (!file) {
-        const err = new Error('File not found in torrent') as ErrorWithStatus;
-        err.status = 404;
-        return next(err);
-    }
+	if (!file) {
+		const err = new Error('File not found in torrent') as ErrorWithStatus;
+		err.status = 404;
+		return next(err);
+	}
 
-    const fileSize = file.length;
-    const [startParsed, endParsed] = range.replace(/bytes=/, '').split('-');
-    const start = Number(startParsed);
-    const end = endParsed ? Number(endParsed) : fileSize - 1;
-    const chunkSize = (end - start) + 1;
+	const fileSize = file.length;
+	const [startParsed, endParsed] = range.replace(/bytes=/, '').split('-');
+	const start = Number(startParsed);
+	const end = endParsed ? Number(endParsed) : fileSize - 1;
+	const chunkSize = (end - start) + 1;
 
-    const headers = {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunkSize,
-        'Content-Type': 'video/mp4',
-    };
+	const headers = {
+		'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+		'Accept-Ranges': 'bytes',
+		'Content-Length': chunkSize,
+		'Content-Type': 'video/mp4',
+	};
 
-    res.writeHead(206, headers);
+	res.writeHead(206, headers);
 
-    const streamPositions = {
-        start,
-        end,
-    };
+	const streamPositions = {
+		start,
+		end,
+	};
 
-    const stream = file.createReadStream(streamPositions);
+	const stream = file.createReadStream(streamPositions);
 
-    stream.pipe(res);
+	stream.pipe(res);
 
-    stream.on('error', (err) => next(err));
+	stream.on('error', (err) => next(err));
 });
 
 client.on('error', (err: Error) => {
-    console.error('Error: ', err.message);
+	console.error('Error: ', err.message);
 });
 
 export default router;
