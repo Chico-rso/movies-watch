@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:4.2.3
+    container_name: movieology-db
+    restart: always
+    volumes:
+      - "./_databases:/data/db"
+    ports:
+      - "27017:27017"
+    command: mongod
