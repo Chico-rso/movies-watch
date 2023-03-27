@@ -119,3 +119,4 @@ dist
 
 _databases
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
+_databases/journal/WiredTigerLog.0000000002
