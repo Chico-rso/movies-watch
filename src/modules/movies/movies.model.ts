@@ -7,6 +7,21 @@ const entity = new Schema<Movie>({
 		type: String,
 		default: ''
 	},
+	magnet:
+	{
+		type: String,
+		default: ''
+	},
+	fileName:
+	{
+		type: String,
+		default: ''
+	},
+	sourceUrl:
+	{
+		type: String,
+		default: ''
+	},
 	plot:
 	{
 		type: String,
