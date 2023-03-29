@@ -45,6 +45,10 @@
 				return activeVideo.filename ? `/stream/${activeVideo.magnet}/${activeVideo.filename}` : "";
 			},
 		},
+		async mounted()
+		{
+			await this.getMyMovies();
+		},
 		methods:
 		{
 			async play(file)
@@ -61,6 +65,11 @@
 				const response = await axios.get(`/movies/search?searchTerm=${this.searchTerm}`);
 				this.files = response.data;
 			},
+			async getMyMovies()
+			{
+				const response = await axios.get(`/movies`);
+				this.files = response.data;
+			}
 		},
 	}).mount("#app");
 </script>

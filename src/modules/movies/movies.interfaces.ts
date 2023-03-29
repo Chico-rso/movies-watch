@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-export interface SerachRequest extends Request
+export interface SearchRequest extends Request
 {
 	query:
 		{

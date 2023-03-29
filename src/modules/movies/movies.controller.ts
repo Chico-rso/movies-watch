@@ -1,13 +1,13 @@
 import { Router } from "express";
-import {CreateMovieRequest, SerachRequest,} from "./movies.interfaces";
 import * as movieService from "./movies.service";
 
+import {CreateMovieRequest, SearchRequest,} from "./movies.interfaces";
 
 const router = Router();
 
 
 
-router.get('/search', async ({ query: { searchTerm } }: SerachRequest, res) => {
+router.get('/search', async ({ query: { searchTerm } }: SearchRequest, res) => {
 try
 {
 	const results = await movieService.movieSearch(searchTerm);

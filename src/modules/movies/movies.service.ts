@@ -15,8 +15,8 @@ export const movieSearch = async (searchTerm: string) => {
 		.map((item) => {
 			const [_, magnetTeg, title] = $(item).find("a").toArray();
 			const magnetLink = $(magnetTeg).attr("href");
-
 			const torrentUrl = `${TORRENT_URL}${$(title).attr("href")}`;
+
 			return ({
 				magnet: extractMagnetFromQuery(magnetLink),
 				title: $(title).text(),
