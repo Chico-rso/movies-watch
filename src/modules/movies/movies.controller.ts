@@ -3,6 +3,7 @@ import * as movieService from "./movies.service";
 import * as IMDBService from "./imdb.service";
 
 import {CreateMovieRequest, SearchRequest,} from "./movies.interfaces";
+import {getMovieCredits} from "./helper/imdb.helper";
 
 
 const router = Router();
@@ -38,7 +39,7 @@ catch(error)
 router.get('/imdb/:IMDBId', async ({ params: { IMDBId } }: SearchRequest, res) => {
 try
 {
-	const results = await IMDBService.getMovieFromIMDB(IMDBId);
+	const results = await getMovieCredits(IMDBId);
 	res.status(200).send(results);
 }
 catch(error)

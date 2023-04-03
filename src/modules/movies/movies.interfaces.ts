@@ -120,4 +120,34 @@ export interface IMDBMovie {
 	vote_count: number;
 }
 
+export interface CrewMember {
+	adult: boolean;
+	gender: number;
+	id: number;
+	known_for_department: string;
+	name: string;
+	original_name: string;
+	popularity: number;
+	profile_path: string | null;
+	credit_id: string;
+	cast_id?: string;
+	character?: string;
+	department: string;
+	job: string;
+	order: number;
+}
+
+export interface GetCreditsResponse {
+	id: number;
+	cast: CrewMember[];
+	crew: CrewMember[];
+}
+
+export interface SearchMoviesResponse {
+	page: number
+	results: Partial<IMDBMovie>[]
+	total_pages: number
+	total_results: number
+}
+
 

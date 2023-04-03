@@ -1,8 +1,45 @@
-import {IMDBMovie, Movie} from "../movies.interfaces";
+import {GetCreditsResponse, IMDBMovie, Movie, SearchMoviesResponse} from "../movies.interfaces";
+import {stringify} from "qs";
+import axios from "axios";
+import {IMDB_SEARCH_URL} from "../movies.const";
+import * as process from "process";
 
-export const getMovieCredits = () =>
-{
 
+export const IMDBRequests = () => {
+	const queryParams = stringify({
+		lang: "ru-RU",
+		api_key: process.env.IMDB_API_KEY,
+	})
+
+	const MOVIE_URL = `${IMDB_SEARCH_URL}/movie`
+	return {
+		getMovie: (IMDBId: string) => axios.get<IMDBMovie>(`${MOVIE_URL}/${IMDBId}?${queryParams}`),
+		getMovieCredits: (IMDBId: number) => axios.get<GetCreditsResponse>(`${MOVIE_URL}/${IMDBId}/credits?${queryParams}`),
+		searchMovie: (query: string) => axios.get<SearchMoviesResponse>(`${MOVIE_URL}/search/movie?${queryParams}&query=${query}`),
+		getVideos: (IMDBId: number) => axios.get(`${MOVIE_URL}/${IMDBId}/videos?${queryParams}`)
+	}
+}
+export const getMovieCredits = async (IMDBId: number) => {
+	try
+	{
+		const {getMovieCredits} = IMDBRequests();
+		const {data: {crew, cast}} = await getMovieCredits(IMDBId);
+		const actors = cast.map(({name}) => name);
+		const {name = ""} = crew.find(({job}) => job === "Director");
+
+		return {
+			actors,
+			director: name
+		}
+	}
+	catch(error)
+	{
+		console.log(error);
+		return {
+			actors: [],
+			director: ""
+		};
+	}
 }
 
 // {
@@ -86,29 +123,20 @@ export const getMovieCredits = () =>
 //   "vote_count": 17086
 // }
 
-export const covertMovie = ({
+export const covertMovie = async ({
 		title,
 		original_title,
 		overview,
-		release_date
-	}: IMDBMovie): Movie => {
-	return ({
+		release_date,
+		id,
+	}: IMDBMovie): Promise<Partial<Movie>> => {
+	const { actors, director } = await getMovieCredits(id);
+	return {
 		title,
 		plot: overview,
 		year: new Date(release_date).getFullYear().toString(),
-		director: 'Джон Уоттс',
-		actors: [
-			'Том Холланд',
-			'Зендея',
-			'Бенедикт Камбербэтч',
-			'Мариса Томей',
-			'Уиллем Дефо',
-			'Альфред Молина',
-			'Джейми Фокс',
-			'Томас Хейден Чёрч',
-			'Рис Иванс',
-			'Джейкоб Баталон'
-		],
+		director,
+		actors,
 		poster: 'https://s.rutor.org/imgproxy.php?url=http://lostpix.com/thumbs/2022-10/20/nzvcef43fj0iz2sx81mioj2xy.png',
 		trailer: 'https://www.youtube.com/watch?v=JfVOs4VSpmA',
 		boxOffice: '',
@@ -122,5 +150,5 @@ export const covertMovie = ({
 		fileName: 'ChelovekPaukNetPutiDomojWEBDLRip1080p.mkv',
 		magnet: 'e06f9f7513321454b8d023e879a9980441dcd385',
 		sourceUrl: 'https://rutor.org/torrent/893033'
-	})
+	}
 }
