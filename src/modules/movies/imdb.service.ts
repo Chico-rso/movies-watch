@@ -2,8 +2,9 @@ import {stringify} from "qs";
 import axios from "axios";
 import {IMDB_SEARCH_URL} from "./movies.const";
 import * as process from "process";
+import {IMDBMovie} from "./movies.interfaces";
 
-export const searchInIMDB = async (query: string) => {
+export const searchInIMDB = async (query: string): Promise<Partial<IMDBMovie>> => {
 	const queryParams = stringify({
 		lang: "ru",
 		api_key: process.env.IMDB_API_KEY,
@@ -14,7 +15,7 @@ export const searchInIMDB = async (query: string) => {
 	return movie;
 }
 
-export const getMovieFromIMDB = async (IMDBId: string) => {
+export const getMovieFromIMDB = async (IMDBId: string): Promise<IMDBMovie> => {
 	const queryParams = stringify({
 		lang: "ru",
 		api_key: process.env.IMDB_API_KEY,
