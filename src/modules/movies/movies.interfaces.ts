@@ -8,6 +8,14 @@ export interface SearchRequest extends Request
 		}
 }
 
+export interface GetMovieFromIMDBRequest extends Request
+{
+	params:
+		{
+			IMDBId: string;
+		}
+}
+
 export interface CreateMovieRequest extends Request
 {
 	body: Movie;

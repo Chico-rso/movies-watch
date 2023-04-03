@@ -27,17 +27,6 @@ export const movieSearch = async (searchTerm: string) => {
 		}).filter((item) => item.title);
 }
 
-export const searchInImdb = async (query: string) => {
-	const queryParams = stringify({
-		lang: "ru",
-		api_key: process.env.IMDB_API_KEY,
-		query
-	})
-	const { data: {results} } = await axios.get(`${IMDB_SEARCH_URL}/search/movie?${queryParams}`)
-	const [movie] = results;
-	return movie;
-}
-
 export const create = async (input: Movie) => {
 	const item = new MovieEntity(input)
 	await item.save();
