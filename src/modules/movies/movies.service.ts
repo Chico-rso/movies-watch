@@ -1,9 +1,11 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import {BASE_SEARCH_URL, TORRENT_URL} from "./movies.const";
+import {BASE_SEARCH_URL, IMDB_SEARCH_URL, TORRENT_URL} from "./movies.const";
 import {extractMagnetFromQuery} from "./movies.util";
+import { stringify } from "qs";
 import MovieEntity from "./movies.model";
 import {Movie} from "./movies.interfaces";
+import * as process from "process";
 
 
 export const movieSearch = async (searchTerm: string) => {
@@ -23,6 +25,17 @@ export const movieSearch = async (searchTerm: string) => {
 				torrentUrl
 			});
 		}).filter((item) => item.title);
+}
+
+export const searchInImdb = async (query: string) => {
+	const queryParams = stringify({
+		lang: "ru",
+		api_key: process.env.IMDB_API_KEY,
+		query
+	})
+	const { data: {results} } = await axios.get(`${IMDB_SEARCH_URL}/search/movie?${queryParams}`)
+	const [movie] = results;
+	return movie;
 }
 
 export const create = async (input: Movie) => {
