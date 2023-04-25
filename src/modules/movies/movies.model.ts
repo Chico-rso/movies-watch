@@ -1,103 +1,92 @@
-import {Schema,model } from "mongoose";
-import {Movie} from "./movies.interfaces";
+import {Schema, model} from 'mongoose'
+import {Movie} from './movies.interfaces'
 
 const entity = new Schema<Movie>({
-	title:
-	{
+	title: {
+		type: String,
+		deafult: ''
+	},
+	magnet: {
+		type: String,
+		deafult: ''
+	},
+	fileName: {
 		type: String,
 		default: ''
 	},
-	magnet:
-	{
+	sourceUrl: {
 		type: String,
 		default: ''
 	},
-	fileName:
-	{
+	plot: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	sourceUrl:
-	{
+	year: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	plot:
-	{
+	director: {
 		type: String,
-		default: ''
-	},
-	year:
-	{
-		type: String,
-		default: ''
-	},
-	director:
-	{
-		type: String,
-		default: ''
+		deafult: ''
 	},
 	actors: [
 		{
 			type: String,
-			default: ''
+			deafult: ''
 		}
 	],
-	poster:
-	{
+	backdrop: {
 		type: String,
 		default: ''
 	},
-	trailer:
-	{
+	poster: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	boxOffice:
-	{
+	trailer: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	released:
-	{
+	boxOffice: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	writer:
-	{
+	released: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	runTime:
-	{
+	writer: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	ratingImdb:
-	{
+	runtime: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	imdbId:
-	{
+	ratingImdb: {
 		type: String,
-		default: ''
+		deafult: ''
 	},
-	rated:
-	{
+	imdbId: {
 		type: String,
-		default: ''
+		deafult: ''
+	},
+	rated: {
+		type: String,
+		deafult: ''
 	},
 	genres: [
 		{
 			type: String,
-			default: ''
+			deafult: ''
 		}
-	],
-});
+	]
+})
 
 entity.index({
 	title: 'text',
-	writer: 'text',
+	writer: 'text'
 })
-export default model<Movie>('Movie', entity);
+
+export default model('movie', entity)
